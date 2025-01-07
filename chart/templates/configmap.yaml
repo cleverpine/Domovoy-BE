@@ -1,0 +1,9 @@
+{{- if .Values.configMap.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "chart.fullname" . }}-config
+data:
+  .env: |-
+    {{- $.Files.Get ".env"  | nindent 6 -}}
+{{- end -}}

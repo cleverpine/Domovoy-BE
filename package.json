@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@azure/msal-node": "^2.13.0",
+    "@azure/storage-blob": "^12.24.0",
+    "cors": "^2.8.5",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2"
+  },
+  "name": "domovoy2.0-be",
+  "version": "1.0.0",
+  "description": "Domovoy BE service",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

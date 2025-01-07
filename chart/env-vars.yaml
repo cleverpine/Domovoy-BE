@@ -1,0 +1,17 @@
+# Environment variables for the chart
+# To apply them add: -f full-filepath/env-vars.yaml
+# as the FIRST argument to helm install
+
+environmentVariables:
+  - name: CLIENT_ID
+    value: $(CLIENT_ID)
+  - name: CLIENT_SECRET
+    value: $(CLIENT_SECRET)
+  - name: HOST
+    value: $(HOST)
+  - name: PASSWORD
+    value: $(PASSWORD)
+  - name: PORT
+    value: $(PORT)
+  - name: USERNAME
+    value: $(USERNAME)

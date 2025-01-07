@@ -1,0 +1,29 @@
+trigger:
+  - main
+  - develop
+
+pool:
+  vmImage: ubuntu-latest
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: DevOps/azure-pipeline-templates
+
+variables:
+  - group: Domovoy-BE-env-vars
+
+steps:
+  - task: InstallSSHKey@0
+    inputs:
+      knownHostsEntry: "$(KNOWN_HOSTS)"
+      sshKeySecureFile: "id_rsa_dobry" # This should be the name of the private key file uploaded to Secure Files
+
+  - template: steps/checkout.yaml@templates
+
+  - template: steps/docker.yaml@templates
+    parameters:
+      imageRepository: domovoy2-service
+
+  - template: steps/helm.yaml@templates

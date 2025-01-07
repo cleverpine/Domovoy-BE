@@ -1,0 +1,55 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+fullNameOverride: domovoy2-service
+
+image:
+  repository: cleverpine.azurecr.io/domovoy2-service
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+
+imagePullSecrets:
+  - name: regcred
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+workingDir: "/app"
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 3000 
+  targetPort: 3000 
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+configMap: 
+  enabled: false
