@@ -29,35 +29,9 @@ jobs:
       - name: Install project dependencies
         run: npm install
 
-      # Install ESLint temporarily for linting
-      - name: Install ESLint
-        run: npm install eslint
-
-      # Dynamically create ESLint flat configuration with .mjs extension
-      - name: Create ESLint config
-        run: |
-          echo "export default [
-            {
-              files: ['**/*.js'],
-              languageOptions: {
-                globals: {
-                  require: true,
-                  process: true,
-                  module: true,
-                  __dirname: true,
-                },
-              },
-              rules: {
-                'no-unused-vars': 'warn',
-                'no-undef': 'error',
-                'semi': ['error', 'always'],
-              },
-            },
-          ];" > eslint.config.mjs
-
-      # Run Linting
+      # Run linting using the existing eslint.config.mjs
       - name: Run linting
-        run: npx eslint --config eslint.config.mjs .
+        run: npx eslint . --config eslint.config.mjs
 
       # Install Jest temporarily for testing
       - name: Install Jest
