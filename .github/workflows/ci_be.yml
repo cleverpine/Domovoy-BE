@@ -33,7 +33,7 @@ jobs:
       - name: Install ESLint
         run: npm install eslint
 
-      # Dynamically create ESLint flat configuration
+      # Dynamically create ESLint flat configuration with .mjs extension
       - name: Create ESLint config
         run: |
           echo "export default [
@@ -53,11 +53,11 @@ jobs:
                 'semi': ['error', 'always'],
               },
             },
-          ];" > eslint.config.js
+          ];" > eslint.config.mjs
 
       # Run Linting
       - name: Run linting
-        run: npx eslint .
+        run: npx eslint --config eslint.config.mjs .
 
       # Install Jest temporarily for testing
       - name: Install Jest
