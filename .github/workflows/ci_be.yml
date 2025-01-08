@@ -33,10 +33,10 @@ jobs:
       - name: Install ESLint
         run: npm install eslint
 
-      # Dynamically create ESLint configuration
+      # Dynamically create ESLint configuration (CommonJS syntax)
       - name: Create ESLint config
         run: |
-          echo "export default {
+          echo "module.exports = {
             files: ['**/*.js'],
             rules: {
               'no-unused-vars': 'warn',
