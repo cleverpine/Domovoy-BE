@@ -35,7 +35,7 @@ jobs:
 
       # Run Linting
       - name: Run linting
-        run: npx eslint . --ext .js
+        run: npx eslint .
 
       # Install Jest temporarily for testing
       - name: Install Jest
