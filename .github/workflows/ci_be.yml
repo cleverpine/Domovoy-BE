@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16 # Use a compatible Node.js version
+          node-version: 16
           cache: 'npm'
 
       # Install dependencies
@@ -32,6 +32,22 @@ jobs:
       # Install ESLint temporarily for linting
       - name: Install ESLint
         run: npm install eslint
+
+      # Dynamically create ESLint configuration
+      - name: Create ESLint config
+        run: |
+          echo "export default {
+            files: ['**/*.js'],
+            rules: {
+              'no-unused-vars': 'warn',
+              'no-undef': 'error',
+              'semi': ['error', 'always'],
+            },
+            env: {
+              node: true,
+              es2020: true,
+            },
+          };" > eslint.config.js
 
       # Run Linting
       - name: Run linting
