@@ -1,0 +1,58 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16 # Use a compatible Node.js version
+          cache: 'npm'
+
+      # Install dependencies
+      - name: Install project dependencies
+        run: npm install
+
+      # Install ESLint temporarily for linting
+      - name: Install ESLint
+        run: npm install eslint
+
+      # Run Linting
+      - name: Run linting
+        run: npx eslint . --ext .js
+
+      # Install Jest temporarily for testing
+      - name: Install Jest
+        run: npm install jest supertest --save-dev
+
+      # Create a basic Jest configuration
+      - name: Create Jest config
+        run: |
+          echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
+
+      # Run Unit Tests
+      - name: Run unit tests
+        run: npx jest --coverage
+
+      # Optional: Upload Jest coverage reports (if needed)
+      - name: Upload test coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/
