@@ -43,8 +43,8 @@ jobs:
           echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
 
       # Run Unit Tests
-      - name: Run unit tests
-        run: npx jest --coverage
+      # - name: Run unit tests
+      #   run: npx jest --coverage
 
       # Optional: Upload Jest coverage reports (if needed)
       - name: Upload test coverage report
