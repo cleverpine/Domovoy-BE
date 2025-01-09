@@ -5,7 +5,10 @@
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "globals": "^15.14.0",
+    "@eslint/js": "^9.17.0",
+    "@eslint/eslintrc": "^1.0.0"
   },
   "name": "domovoy2.0-be",
   "version": "1.0.0",
