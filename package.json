@@ -5,7 +5,10 @@
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "globals": "^15.14.0",
+    "@eslint/js": "^9.17.0",
+    "@eslint/eslintrc": "^1.0.0"
   },
   "name": "domovoy2.0-be",
   "version": "1.0.0",
@@ -13,9 +16,17 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^15.14.0"
+  }
 }

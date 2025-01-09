@@ -1,6 +1,7 @@
 const express = require('express');
+
 const router = express.Router();
-const fm =  require('date-fns');
+const fm = require('date-fns');
 const fetchWithHeaders = require('../utils/fetchWrapper');
 
 const FETCH_CALENDAR_ENDPOINT = 'https://graph.microsoft.com/v1.0/me/calendar/getSchedule';
@@ -34,7 +35,7 @@ const fetchCalendarRequest = async (token) => {
     availabilityViewInterval: AVAILABILITY_VIEW_INTERVAL,
   };
 
-  return await fetchWithHeaders(FETCH_CALENDAR_ENDPOINT, token, body, 'POST');
+  return fetchWithHeaders(FETCH_CALENDAR_ENDPOINT, token, body, 'POST');
 };
 
 router.post(FETCH_CALENDAR_ROOMS_ROUTE, async (req, res) => {
