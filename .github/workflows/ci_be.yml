@@ -60,8 +60,7 @@ jobs:
           password: ${{ secrets.SP_ACR_PASSWORD }}
       - name: List images in Azure Container Registry
         run: |
-            az acr repository list --name cleverpine --output table
-
+            docker pull cleverpine.azurecr.io/account-service:20230511.4
 
    
           
