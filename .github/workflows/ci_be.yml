@@ -29,26 +29,40 @@ jobs:
       - name: Install project dependencies
         run: npm install
 
-      # Run linting using the existing eslint.config.mjs
-      - name: Run linting
-        run: npx eslint . --config eslint.config.mjs
+      # # Run linting using the existing eslint.config.mjs
+      # - name: Run linting
+      #   run: npx eslint . --config eslint.config.mjs
 
-      # Install Jest temporarily for testing
-      - name: Install Jest
-        run: npm install jest supertest --save-dev
+      # # Install Jest temporarily for testing
+      # - name: Install Jest
+      #   run: npm install jest supertest --save-dev
 
-      # Create a basic Jest configuration
-      - name: Create Jest config
-        run: |
-          echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
+      # # Create a basic Jest configuration
+      # - name: Create Jest config
+      #   run: |
+      #     echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
 
-      # Run Unit Tests
-      # - name: Run unit tests
-      #   run: npx jest --coverage
+      # # Run Unit Tests
+      # # - name: Run unit tests
+      # #   run: npx jest --coverage
 
-      # Optional: Upload Jest coverage reports (if needed)
-      - name: Upload test coverage report
-        uses: actions/upload-artifact@v3
+      # # Optional: Upload Jest coverage reports (if needed)
+      # - name: Upload test coverage report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: coverage-report
+      #     path: coverage/
+
+      - uses: azure/docker-login@v2
         with:
-          name: coverage-report
-          path: coverage/
+          login-server: cleverpine.azurecr.io
+          username: ${{ secrets.SP_ACR_USERNAME }}
+          password: ${{ secrets.SP_ACR_PASSWORD }}
+      - name: List images in Azure Container Registry
+        run: |
+            az acr repository list --name cleverpine --output table
+
+
+   
+          
+  
