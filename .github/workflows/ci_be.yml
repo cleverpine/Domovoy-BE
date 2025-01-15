@@ -15,6 +15,7 @@ jobs:
     env:
       REGISTRY: cleverpine.azurecr.io
       IMAGE_REPOSITORY: ${{ github.repository }}
+      BUILD_DIR: ./build
       
 
     steps:
@@ -81,6 +82,25 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/domovoy2-service:${{ env.TAG }}
+
+      - name: Package Helm chart
+        run: |
+          mkdir -p ${{ env.BUILD_DIR }}
+          helm package ./chart --destination ${{ env.BUILD_DIR }}
+
+      - name: Copy additional files
+        run: |
+          cp ./chart/*-values.yaml ${{ env.BUILD_DIR }}/
+          cp ./chart/values.*.yaml ${{ env.BUILD_DIR }}/
+          cp ./chart/env-vars.yaml ${{ env.BUILD_DIR }}/
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: drop
+          path: ${{ env.BUILD_DIR }}
+
+
 
 
    
