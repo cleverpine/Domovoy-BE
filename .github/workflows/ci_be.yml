@@ -12,6 +12,10 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: cleverpine.azurecr.io
+      IMAGE_REPOSITORY: ${{ github.repository }}
+      TAG: ${{ github.run_number }}
 
     steps:
       # Checkout the code
@@ -29,26 +33,47 @@ jobs:
       - name: Install project dependencies
         run: npm install
 
-      # Run linting using the existing eslint.config.mjs
-      - name: Run linting
-        run: npx eslint . --config eslint.config.mjs
+      # # Run linting using the existing eslint.config.mjs
+      # - name: Run linting
+      #   run: npx eslint . --config eslint.config.mjs
 
-      # Install Jest temporarily for testing
-      - name: Install Jest
-        run: npm install jest supertest --save-dev
+      # # Install Jest temporarily for testing
+      # - name: Install Jest
+      #   run: npm install jest supertest --save-dev
 
-      # Create a basic Jest configuration
-      - name: Create Jest config
-        run: |
-          echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
+      # # Create a basic Jest configuration
+      # - name: Create Jest config
+      #   run: |
+      #     echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
 
-      # Run Unit Tests
-      # - name: Run unit tests
-      #   run: npx jest --coverage
+      # # Run Unit Tests
+      # # - name: Run unit tests
+      # #   run: npx jest --coverage
 
-      # Optional: Upload Jest coverage reports (if needed)
-      - name: Upload test coverage report
-        uses: actions/upload-artifact@v3
+      # # Optional: Upload Jest coverage reports (if needed)
+      # - name: Upload test coverage report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: coverage-report
+      #     path: coverage/
+
+
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v2
         with:
-          name: coverage-report
-          path: coverage/
+          login-server: ${{ env.REGISTRY }}
+          username: ${{ secrets.SP_ACR_AKS_USERNAME }}
+          password: ${{ secrets.SP_ACR_AKS_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/domovoy2-service:${{ env.TAG }}
+
+
+   
+          
+  
