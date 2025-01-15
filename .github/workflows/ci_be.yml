@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - cicd/workflow-for-deploy
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 
