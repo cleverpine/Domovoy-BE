@@ -90,7 +90,6 @@ jobs:
 
       - name: Copy additional files
         run: |
-          cp ./chart/*-values.yaml ${{ env.BUILD_DIR }}/
           cp ./chart/values.*.yaml ${{ env.BUILD_DIR }}/
           cp ./chart/env-vars.yaml ${{ env.BUILD_DIR }}/
 
