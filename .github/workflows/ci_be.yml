@@ -65,13 +65,14 @@ jobs:
           username: ${{ secrets.SP_ACR_AKS_USERNAME }}
           password: ${{ secrets.SP_ACR_AKS_PASSWORD }}
 
-      - name: Set year-based tag
+      - name: Set date-based tag
         id: set-tag
         run: |
           YEAR=$(date +'%Y')
-          TAG="$YEAR.${{ github.run_number }}"
+          MONTH=$(date +'%m')
+          DAY=$(date +'%d')
+          TAG="$YEAR$MONTH$DAY.${{ github.run_number }}"
           echo "TAG=$TAG" >> $GITHUB_ENV
-
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
