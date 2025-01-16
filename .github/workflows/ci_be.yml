@@ -16,6 +16,8 @@
         REGISTRY: cleverpine.azurecr.io
         IMAGE_REPOSITORY: ${{ github.repository }}
         BUILD_DIR: ./build
+        KUBE_NAMESPACE: domovoy2-dev
+        RELEASE_NAME: domovoy2-service-dev
         
 
       steps:
@@ -97,18 +99,31 @@
           run: |
             echo -n '${{ secrets.ENV_VARS_HELM_DOMOVOY_BE }}' > ./build/env-vars.yaml
 
-            cat ./build/env-vars.yaml
-
         - name: Upload build artifact
           uses: actions/upload-artifact@v3
           with:
             name: drop
             path: ${{ env.BUILD_DIR }}
 
+        - name: Set up Azure Kubernetes Service (AKS)
+          uses: azure/aks-set-context@v2
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS_DEPLOY_AKS }}
+            cluster-name: internal-development-aks
+            resource-group: internal-development
+            subscription-id: d7ef0fe4-a628-4151-8319-865c6692951a
+
+        - name: Deploy Helm chart
+          run: |
+            helm upgrade --install ${{ env.RELEASE_NAME }} ./build/domovoy2-service-0.1.0.tgz \
+              --namespace ${{ env.KUBE_NAMESPACE }} \
+              -f ./build/chart/values.yaml \
+              -f ./build/chart/values.dev.yaml \
+              -f ./build/env-vars.yaml \
+              --set image.tag=${{ env.TAG }}
        
 
        
-
 
 
 
