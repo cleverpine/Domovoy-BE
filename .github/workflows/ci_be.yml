@@ -99,6 +99,21 @@ jobs:
           name: drop
           path: ${{ env.BUILD_DIR }}
 
+      - name: Set environment variables from secrets
+        run: |
+          export CLIENT_ID=${{ secrets.CLIENT_ID }}
+          export CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
+          export HOST=${{ secrets.HOST }}
+          export PASSWORD=${{ secrets.PASSWORD }}
+          export PORT=${{ secrets.PORT }}
+          export USERNAME=${{ secrets.USERNAME }}
+
+      - name: Replace placeholders in env-vars.yaml
+        run: |
+          envsubst < ./build/env-vars.yaml > ./build/env-vars-substituted.yaml
+          cat ./build/env-vars-substituted.yaml
+  
+
 
 
 
