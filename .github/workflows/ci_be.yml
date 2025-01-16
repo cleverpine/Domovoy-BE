@@ -106,7 +106,10 @@ jobs:
           export HOST=${{ secrets.HOST }}
           export PASSWORD=${{ secrets.PASSWORD }}
           export PORT=${{ secrets.PORT }}
-          export USERNAME=${{ secrets.USERNAME }}
+          export USERNAME="MARTIN"
+
+          cat ./build/env-vars-substituted.yaml
+
 
       - name: Replace placeholders in env-vars.yaml
         run: |
