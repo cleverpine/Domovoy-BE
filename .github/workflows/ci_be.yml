@@ -91,7 +91,13 @@
         - name: Copy additional files
           run: |
             cp ./chart/values.*.yaml ${{ env.BUILD_DIR }}/
-            cp ./chart/env-vars.yaml ${{ env.BUILD_DIR }}/
+            cp ./chart/env-vars.yaml ${{ env.BUILD_DIR }}/ 
+
+        - name: Set environment variables from secrets
+          run: |
+            echo -n '${{ secrets.ENV_VARS_HELM_DOMOVOY_BE }}' > ./build/env-vars.yaml
+
+            cat ./build/env-vars.yaml
 
         - name: Upload build artifact
           uses: actions/upload-artifact@v3
@@ -99,11 +105,7 @@
             name: drop
             path: ${{ env.BUILD_DIR }}
 
-        - name: Set environment variables from secrets
-          run: |
-            echo -n '${{ secrets.ENV_VARS_HELM_DOMOVOY_BE }}' > ./build/env-vars.yaml
-
-            cat ./build/env-vars.yaml
+       
 
        
 
