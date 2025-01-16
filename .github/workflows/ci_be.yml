@@ -121,8 +121,8 @@
           run: |
             helm upgrade --install ${{ env.RELEASE_NAME }} ./build/domovoy2-service-0.1.0.tgz \
               --namespace ${{ env.KUBE_NAMESPACE }} \
-              -f ./build/chart/values.yaml \
-              -f ./build/chart/values.dev.yaml \
+              -f ./build/values.yaml \
+              -f ./build/values.dev.yaml \
               -f ./build/env-vars.yaml \
               --set image.tag=${{ env.TAG }}
             
