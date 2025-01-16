@@ -108,7 +108,13 @@
             export PORT=${{ secrets.PORT }}
             export USERNAME="MARTIN"
 
+            printenv
+            
+            envsubst < ./build/env-vars.yaml > ./build/env-vars.yaml
             cat ./build/env-vars.yaml
+
+            cat ./build/env-vars.yaml
+
 
         - name: Replace placeholders in env-vars.yaml
           run: |
