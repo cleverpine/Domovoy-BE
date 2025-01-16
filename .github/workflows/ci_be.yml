@@ -104,7 +104,7 @@
           with:
             name: drop
             path: ${{ env.BUILD_DIR }}
-
+#test
         - name: Set up Azure Kubernetes Service (AKS)
           uses: azure/aks-set-context@v2
           with:
@@ -125,8 +125,5 @@
 
        
 
-
-
-    
             
     
