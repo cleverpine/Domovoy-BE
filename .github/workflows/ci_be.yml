@@ -1,25 +1,27 @@
-  name: Backend CI
+  name: Backend Workflow
 
   on:
-    push:
+    # Run CI steps on pull requests
+    pull_request:
       branches:
         - main
         - develop
-        - cicd/workflow-for-deploy
-    workflow_dispatch:  # Allows manual triggering of the workflow
 
-
+    # Allow manual deployment
+    workflow_dispatch:
+      inputs:
+        environment:
+          description: 'Select the environment to deploy to (dev or prod)'
+          required: true
+          default: 'dev'
+          type: choice
+          options:
+            - dev
+            - prod
   jobs:
-    backend:
+    ci:
+      if: github.event_name == 'pull_request'
       runs-on: ubuntu-latest
-      env:
-        REGISTRY: cleverpine.azurecr.io
-        IMAGE_REPOSITORY: ${{ github.repository }}
-        BUILD_DIR: ./build
-        KUBE_NAMESPACE: domovoy2-dev
-        RELEASE_NAME: domovoy2-service-dev
-        
-
       steps:
         # Checkout the code
         - name: Checkout code
@@ -36,30 +38,60 @@
         - name: Install project dependencies
           run: npm install
 
-        # # Run linting using the existing eslint.config.mjs
-        # - name: Run linting
-        #   run: npx eslint . --config eslint.config.mjs
+        # Run linting using the existing eslint.config.mjs
+        - name: Run linting
+          run: npx eslint . --config eslint.config.mjs
 
-        # # Install Jest temporarily for testing
-        # - name: Install Jest
-        #   run: npm install jest supertest --save-dev
+        # Install Jest temporarily for testing
+        - name: Install Jest
+          run: npm install jest supertest --save-dev
 
-        # # Create a basic Jest configuration
-        # - name: Create Jest config
-        #   run: |
-        #     echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
+        # Create a basic Jest configuration
+        - name: Create Jest config
+          run: |
+            echo "module.exports = { testEnvironment: 'node' };" > jest.config.js
 
-        # # Run Unit Tests
-        # # - name: Run unit tests
-        # #   run: npx jest --coverage
+        # Run Unit Tests
+        # - name: Run unit tests
+        #   run: npx jest --coverage
 
-        # # Optional: Upload Jest coverage reports (if needed)
-        # - name: Upload test coverage report
-        #   uses: actions/upload-artifact@v3
-        #   with:
-        #     name: coverage-report
-        #     path: coverage/
+        # Optional: Upload Jest coverage reports (if needed)
+        - name: Upload test coverage report
+          uses: actions/upload-artifact@v3
+          with:
+            name: coverage-report
+            path: coverage/
+            
+    deploy:
+      if: github.event_name == 'workflow_dispatch'
+      runs-on: ubuntu-latest
+      env:
+        REGISTRY: cleverpine.azurecr.io
+        IMAGE_REPOSITORY: domovoy2-service
+        BUILD_DIR: ./build
 
+
+      steps:
+        # Checkout the code
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+
+        - name: Set environment-specific variables
+          id: set-env
+          run: |
+            if [ "${{ github.event.inputs.environment }}" = "dev" ]; then
+              echo "KUBE_NAMESPACE=domovoy2-dev" >> $GITHUB_ENV
+              echo "RELEASE_NAME=domovoy2-service-dev" >> $GITHUB_ENV
+              echo "VALUES_FILE=./build/values.dev.yaml" >> $GITHUB_ENV
+            elif [ "${{ github.event.inputs.environment }}" = "prod" ]; then
+              echo "KUBE_NAMESPACE=domovoy2" >> $GITHUB_ENV
+              echo "RELEASE_NAME=domovoy2-service-prod" >> $GITHUB_ENV
+              echo "VALUES_FILE=./build/values.prod.yaml" >> $GITHUB_ENV
+            else
+              echo "Invalid environment: ${{ github.event.inputs.environment }}"
+              exit 1
+            fi
 
         - name: Log in to Azure Container Registry
           uses: azure/docker-login@v2
@@ -83,7 +115,7 @@
             context: .
             file: ./Dockerfile
             push: true
-            tags: ${{ env.REGISTRY }}/domovoy2-service:${{ env.TAG }}
+            tags: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ env.TAG }}
 
         - name: Package Helm chart
           run: |
@@ -109,7 +141,7 @@
           uses: azure/login@v2
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
-         
+          
 
         - name: Configure AKS context
           uses: azure/aks-set-context@v4
@@ -121,7 +153,7 @@
           run: |
             helm upgrade --install ${{ env.RELEASE_NAME }} ./build/domovoy2-service-0.1.0.tgz \
               --namespace ${{ env.KUBE_NAMESPACE }} \
-              -f ./build/values.dev.yaml \
+              -f ${{ env.VALUES_FILE }} \
               -f ./build/env-vars.yaml \
               --set image.tag=${{ env.TAG }}
             
